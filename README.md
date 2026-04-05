@@ -1,93 +1,169 @@
-# Assignment 6 Report
+# Assignment 6: Medians and Order Statistics & Elementary Data Structures
 
-## 1. Part 1: Selection algorithms
+## Overview
 
-### 1.1 Deterministic selection
+This repository contains the work for Assignment 6. The assignment is divided into two main parts.  
+The first part focuses on selection algorithms for finding the k-th smallest element in an array.  
+The second part focuses on implementing basic data structures from scratch and discussing their performance and practical use.
 
-The deterministic method is implemented as `deterministic_select` with a recursive helper. The code breaks the input into groups of five, sorts each small group to obtain its median, recursively selects the median of the medians, and then applies a three-way partition around that pivot. The implementation uses 1-based indexing for the public API and converts to 0-based indexing internally. Duplicate values are handled explicitly through the `less`, `equal`, and `greater` partitions.
+## Repository Contents
 
-### 1.2 Randomized selection
+- `assignment6_standalone.py` – main standalone Python file containing the full implementation
+- `Assignment6_Colab.ipynb` – Colab notebook version
+- `selection_benchmark_results.csv` – benchmark output for the selection algorithms
+- `report.md` / `report.docx` – written report for the assignment
+- `README.md` – instructions and summary of the work
 
-The randomized method is implemented as `randomized_select`, which uses a randomized pivot selection strategy similar to Quickselect. The notebook comments state that the method has expected linear running time in practice but does not guarantee the same worst-case bound as the deterministic version.
+## Part 1: Selection Algorithms
 
-### 1.3 Correctness and edge-case handling
+### Implemented Algorithms
 
-The notebook includes a shared input-validation helper to reject invalid arrays and out-of-range values of `k`. It also uses three-way partitioning so arrays with duplicate values are handled cleanly. In addition, the notebook contains several small correctness checks, including single-element inputs and duplicate-heavy inputs.
+This assignment includes two methods for finding the k-th smallest element in an array:
 
-## 2. Part 1 performance analysis
+1. **Deterministic Selection (Median of Medians)**  
+   This method guarantees worst-case linear time.  
+   The implementation divides the array into groups of five, finds the median of each group, recursively finds the median of those medians, and uses that value as the pivot.
 
-### 2.1 Time complexity
+2. **Randomized Selection (Quickselect-style)**  
+   This method chooses a pivot randomly and partitions the array around it.  
+   It has expected linear running time in practice, although its worst case is still quadratic.
 
-Based on the implementation structure, the deterministic algorithm is designed to achieve worst-case $O(n)$ time by choosing a pivot through the Median of Medians method. The recursive structure and grouping-by-five strategy are consistent with that guarantee. The randomized algorithm is designed for expected $O(n)$ time because each partition step is linear and the pivot is chosen randomly, but its worst case remains $O(n^2)$ if unlucky pivots are selected repeatedly.
+### Correctness and Edge Cases
 
-### 2.2 Space complexity and overhead
+The implementation includes checks for:
+- invalid input arrays
+- out-of-range values of `k`
+- arrays with duplicate elements
+- small input cases such as single-element arrays
 
-Both selection implementations make copies of the input sequence before processing. They also allocate fresh `less`, `equal`, and `greater` lists during partitioning. This means the implementations are not in-place. The deterministic version has more overhead because it must create groups of five, store medians, and recurse on the median list before partitioning the original data. The randomized version has less pivot-selection overhead, which helps explain why it is usually faster in the benchmark results.
+Three-way partitioning is used so duplicate values are handled correctly.
 
-## 3. Part 1 empirical analysis
+## Performance Analysis
 
-The benchmark CSV records results for input sizes 1,000, 5,000, 10,000, and 20,000 under four distributions: random, sorted, reverse-sorted, and many duplicates. In all cases, the code selects the median position (`k = n/2`).
+### Time Complexity
 
-Across the 16 benchmark cases, the randomized method is faster in 15 cases, while the deterministic method is faster in 1 case. On average, the deterministic implementation takes about 3.33 times as long as the randomized implementation in this dataset.
+- **Deterministic Selection:**  
+  Worst-case time complexity is **O(n)** because the Median of Medians strategy guarantees a reasonably balanced pivot.
 
-The benchmark results show three main trends:
+- **Randomized Selection:**  
+  Expected time complexity is **O(n)** because each partition step is linear and the pivot is chosen randomly.  
+  Worst-case time complexity is **O(n²)** if poor pivots are selected repeatedly.
 
-1. Running time grows as the input size grows for both algorithms.
+### Space Complexity
 
-2. The randomized implementation is usually faster in practice, which matches the lower overhead of randomized pivot selection.
+Both implementations create additional lists during partitioning (`less`, `equal`, and `greater`), so they are not fully in-place.
 
-3. The deterministic method remains stable across different distributions, but its constant-factor overhead is visible, especially on larger inputs.
+- Deterministic selection has more overhead because it also creates groups of five and a list of medians.
+- Randomized selection has less overhead, which helps explain why it is usually faster in practice.
 
-One notable exception appears at size 1,000 with many duplicates, where the deterministic method is slightly faster than the randomized method. Even so, the broader pattern in the CSV favors the randomized implementation for runtime performance.
+## Empirical Benchmark Results
 
-### 3.1 Mean timing by size (milliseconds)
+The benchmark tests compare both selection algorithms on the following input types:
 
-- Size 1000: deterministic 0.370 ms, randomized 0.234 ms, ratio 1.65x.
+- random
+- sorted
+- reverse sorted
+- many duplicates
 
-- Size 5000: deterministic 1.916 ms, randomized 0.777 ms, ratio 2.43x.
+The tested input sizes are:
 
-- Size 10000: deterministic 6.986 ms, randomized 1.594 ms, ratio 4.38x.
+- 1,000
+- 5,000
+- 10,000
+- 20,000
 
-- Size 20000: deterministic 14.568 ms, randomized 3.111 ms, ratio 4.87x.
+In all benchmark cases, the code selects the middle position of the array.
 
-### 3.2 Mean timing by distribution (milliseconds)
+### Main Observations
 
-- many_duplicates: deterministic 6.620 ms, randomized 1.739 ms, ratio 2.56x.
+- Running time increases as input size increases for both algorithms.
+- The randomized algorithm is faster in most cases.
+- The deterministic algorithm is more stable across input distributions, but it has higher constant overhead.
 
-- random: deterministic 4.907 ms, randomized 1.442 ms, ratio 2.98x.
+Across the benchmark results, the randomized implementation is faster in almost all cases, while the deterministic implementation provides the stronger worst-case guarantee.
 
-- reverse_sorted: deterministic 6.320 ms, randomized 1.402 ms, ratio 4.07x.
+### Mean Timing by Size
 
-- sorted: deterministic 5.993 ms, randomized 1.132 ms, ratio 3.71x.
+- **Size 1000:** deterministic 0.370 ms, randomized 0.234 ms
+- **Size 5000:** deterministic 1.916 ms, randomized 0.777 ms
+- **Size 10000:** deterministic 6.986 ms, randomized 1.594 ms
+- **Size 20000:** deterministic 14.568 ms, randomized 3.111 ms
 
-## 4. Part 2: Elementary data structures
+### Mean Timing by Distribution
 
-### 4.1 Implemented structures
+- **many_duplicates:** deterministic 6.620 ms, randomized 1.739 ms
+- **random:** deterministic 4.907 ms, randomized 1.442 ms
+- **reverse_sorted:** deterministic 6.320 ms, randomized 1.402 ms
+- **sorted:** deterministic 5.993 ms, randomized 1.132 ms
 
-The notebook includes the following data structures required by the assignment: a dynamic array (`ArrayList`), a matrix stored as a list of lists, an array-based stack (`ArrayStack`), an array-based circular queue (`ArrayQueue`), and a singly linked list (`SinglyLinkedList`). It also includes an optional rooted tree (`RootedTree`) represented with node objects and child lists.
+## Part 2: Elementary Data Structures
 
-### 4.2 Complexity of the implemented operations
+### Implemented Structures
 
-- **ArrayList:** `append` is amortized $O(1)$ because resizing happens only occasionally; `insert` and `delete` are $O(n)$ due to shifting elements; `get` and `set` are $O(1)$.
+The following data structures were implemented from scratch in Python:
 
-- **Matrix:** `get` and `set` are $O(1)$; `insert_row` is $O(c)$ because the inserted row is copied; `delete_row` is $O(r)$ in the worst case because the outer list may shift remaining row references.
+- Dynamic array (`ArrayList`)
+- Matrix
+- Array-based stack (`ArrayStack`)
+- Array-based circular queue (`ArrayQueue`)
+- Singly linked list (`SinglyLinkedList`)
+- Optional rooted tree (`RootedTree`)
 
-- **ArrayStack:** `push` and `pop` are amortized $O(1)$; `peek` is $O(1)$.
+### Complexity of Operations
 
-- **ArrayQueue:** the queue uses circular indexing to avoid shifting on dequeue, so `enqueue` and `dequeue` are amortized $O(1)$, while `front` is $O(1)$. Resizing still costs $O(n)$ when it occurs.
+#### ArrayList
+- `append` – amortized **O(1)**
+- `insert` – **O(n)**
+- `delete` – **O(n)**
+- `get` / `set` – **O(1)**
 
-- **SinglyLinkedList:** `insert_front` is $O(1)$; `insert_end` is $O(n)$ because there is no tail pointer; `delete_value` is $O(n)$ in the worst case; `traverse` is $O(n)$.
+#### Matrix
+- `get` / `set` – **O(1)**
+- `insert_row` – **O(c)** where `c` is the number of columns
+- `delete_row` – up to **O(r)** where `r` is the number of rows
 
-- **RootedTree:** depth-first traversal visits each node once, so `dfs` is $O(n)$.
+#### ArrayStack
+- `push` – amortized **O(1)**
+- `pop` – amortized **O(1)**
+- `peek` – **O(1)**
 
-### 4.3 Trade-offs and practical applications
+#### ArrayQueue
+- `enqueue` – amortized **O(1)**
+- `dequeue` – amortized **O(1)**
+- `front` – **O(1)**
 
-The notebook reflects the main trade-offs the assignment asks to discuss. Arrays provide fast indexing and good cache locality, which is why the `ArrayList`, stack, and circular queue are efficient for direct access and amortized constant-time end operations. Linked lists avoid contiguous resizing and allow constant-time insertion at the front, but they use extra pointer storage and do not support constant-time random access. The circular-array queue is a strong practical choice because it avoids the cost of shifting elements after every dequeue.
+#### SinglyLinkedList
+- `insert_front` – **O(1)**
+- `insert_end` – **O(n)**
+- `delete_value` – **O(n)**
+- `traverse` – **O(n)**
 
-In real-world terms, stacks are natural for undo systems and function-call management, queues are useful for scheduling and buffering, dynamic arrays are common for general-purpose storage when indexing matters, linked lists are useful when front insertion is frequent, and rooted trees are a natural fit for hierarchies such as folders, menus, or parsed document structures.
+#### RootedTree
+- `dfs` – **O(n)**
 
-## 5. Conclusion
+## Trade-Offs and Practical Applications
 
-Based on the notebook and the benchmark CSV, the submission addresses the main assignment requirements well. Part 1 includes both required order-statistics algorithms and empirical timing results across multiple input sizes and distributions. Part 2 implements the core required data structures and includes the optional rooted tree as an extension.
+This assignment highlights the main differences between arrays and linked lists.
 
-The main result from the benchmark data is that the randomized selection implementation is usually faster in practice for the tested inputs, while the deterministic method offers the stronger worst-case guarantee with higher constant overhead.
+- Arrays provide fast indexing and good cache performance.
+- Linked lists are useful when frequent insertion at the front is needed.
+- Array-based stacks are simple and efficient for push/pop operations.
+- Circular-array queues are practical because they avoid shifting elements during dequeue.
+- Trees are useful for representing hierarchical relationships.
+
+### Real-World Examples
+
+- **Stacks:** undo systems, browser history, function calls
+- **Queues:** scheduling, buffering, task processing
+- **Dynamic arrays:** general-purpose storage where indexing matters
+- **Linked lists:** applications with frequent front insertion
+- **Rooted trees:** file systems, menus, organizational structures
+
+## How to Run
+
+### Standalone Python File
+
+Run the main implementation file:
+
+```bash
+python assignment6_standalone.py
