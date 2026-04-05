@@ -8,8 +8,7 @@ The second part focuses on implementing basic data structures from scratch and d
 
 ## Repository Contents
 
-- `assignment6_standalone.py` – main standalone Python file containing the full implementation
-- `Assignment6_Colab.ipynb` – Colab notebook version
+- `Assignment6_Colab.ipynb` – Colab notebook
 - `selection_benchmark_results.csv` – benchmark output for the selection algorithms
 - `report.md` / `report.docx` – written report for the assignment
 - `README.md` – instructions and summary of the work
