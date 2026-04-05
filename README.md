@@ -156,11 +156,14 @@ This assignment highlights the main differences between arrays and linked lists.
 - **Linked lists:** applications with frequent front insertion
 - **Rooted trees:** file systems, menus, organizational structures
 
-## How to Run
 
-### Standalone Python File
+### Colab Notebook
 
-Run the main implementation file:
+1. Open Google Colab.
+2. Upload the notebook file `Assignment6_Colab.ipynb`.
+3. Run the cells from top to bottom in order.
+4. Make sure the cells that define the functions and classes are executed before running any demo or benchmark cells.
+5. To generate the benchmark CSV file, run the cell that calls:
 
-```bash
-python assignment6_standalone.py
+```python
+run_selection_benchmarks()
