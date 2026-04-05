@@ -1,5 +1,3 @@
-# Assignment 6: Medians and Order Statistics & Elementary Data Structures
-
 ## Overview
 
 This repository contains the work for Assignment 6. The assignment is divided into two main parts.  
