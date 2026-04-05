@@ -8,7 +8,7 @@ The second part focuses on implementing basic data structures from scratch and d
 
 - `Assignment6_Colab.ipynb` – Colab notebook
 - `selection_benchmark_results.csv` – benchmark output for the selection algorithms
-- `report.md` / `report.docx` – written report for the assignment
+- `report.docx` – written report for the assignment
 - `README.md` – instructions and summary of the work
 
 ## Part 1: Selection Algorithms
